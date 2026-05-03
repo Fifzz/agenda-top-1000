@@ -3,186 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Agenda milpau</title>
+    <title>Agenda Milpau 2k26</title>
     <style>
         :root {
             --bg: #ffffff;
             --text: #111111;
-            --accent: #000000;
-            --gray: #f5f5f7;
+            --accent: #007aff;
+            --gray: #f2f2f7;
             --border: #d2d2d7;
-            --danger: #ff3b30;
+            --white: #ffffff;
         }
 
-        /* Suporte a Dark Mode automático */
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg: #000000;
-                --text: #f5f5f7;
-                --accent: #ffffff;
-                --gray: #1c1c1e;
+                --bg: #1c1c1e;
+                --text: #ffffff;
+                --accent: #0a84ff;
+                --gray: #2c2c2e;
                 --border: #38383a;
+                --white: #1c1c1e;
             }
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
+            padding: 20px;
             display: flex;
             justify-content: center;
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            padding-top: 40px;
-        }
+        .container { width: 100%; max-width: 500px; }
 
-        h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 30px;
-            letter-spacing: -0.04em;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column; /* Empilha no mobile para facilitar o toque */
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        input {
-            width: 100%;
-            padding: 16px; /* Aumentado para facilitar digitação no celular */
-            font-size: 16px; /* Evita zoom automático no iOS */
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg);
-            color: var(--text);
-            outline: none;
-        }
-
-        button#addBtn {
-            width: 100%;
-            padding: 16px;
-            background: var(--accent);
-            color: var(--bg);
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 0;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
         }
 
-        .task-text {
-            font-size: 17px;
-            padding-right: 15px;
-            word-break: break-word;
-        }
+        h1 { font-size: 24px; margin: 0; }
 
-        .delete-btn {
-            background: var(--gray);
-            color: var(--danger);
-            border: none;
-            padding: 8px 16px;
+        .selectors { display: flex; gap: 10px; }
+        select {
+            padding: 8px;
             border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            min-height: 44px; /* Tamanho mínimo recomendado pela Apple/Google */
+            border: 1px solid var(--border);
+            background: var(--gray);
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Calendário */
+        .calendar-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 12px;
+            color: #8e8e93;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .day {
+            aspect-ratio: 1;
             display: flex;
             align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            transition: 0.2s;
         }
 
-        /* Ajustes para telas maiores */
-        @media (min-width: 480px) {
-            .input-group {
-                flex-direction: row;
-            }
-            button#addBtn {
-                width: auto;
-            }
+        .day:hover { background: var(--gray); }
+        .day.selected { background: var(--accent) !important; color: white; font-weight: bold; }
+        .day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 4px;
+            height: 4px;
+            background: #ff3b30;
+            border-radius: 50%;
         }
+
+        /* Área de Cadastro */
+        .event-form {
+            background: var(--gray);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-title { font-weight: bold; margin-bottom: 10px; display: block; color: var(--accent); }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text);
+            font-size: 16px;
+        }
+
+        .row { display: flex; gap: 10px; }
+        
+        button#addBtn {
+            flex: 1;
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Lista de Compromissos */
+        .event-list { list-style: none; padding: 0; }
+        .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .event-details b { color: var(--accent); margin-right: 10px; }
+        .delete-btn { color: #ff3b30; font-size: 13px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Agenda milpau subnautica 2k26.</h1>
-    
-    <div class="input-group">
-        <input type="text" id="taskInput" placeholder="O que fazer hoje?" autocomplete="off">
-        <button id="addBtn" onclick="addTask()">Adicionar</button>
+    <div class="header">
+        <h1>Agenda 2k26</h1>
+        <div class="selectors">
+            <select id="monthSelect"></select>
+            <select id="yearSelect"></select>
+        </div>
     </div>
 
-    <ul id="taskList"></ul>
+    <div class="calendar-card">
+        <div class="weekdays">
+            <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div><div>QUI</div><div>SEX</div><div>SÁB</div>
+        </div>
+        <div id="daysGrid" class="days-grid"></div>
+    </div>
+
+    <div class="event-form">
+        <span class="form-title" id="displayDate">Selecione um dia</span>
+        <input type="text" id="taskInput" placeholder="O que vamos fazer?">
+        <div class="row">
+            <input type="time" id="timeInput">
+            <button id="addBtn" onclick="saveEvent()">Salvar</button>
+        </div>
+    </div>
+
+    <ul id="eventList" class="event-list"></ul>
 </div>
 
 <script>
-    const input = document.getElementById('taskInput');
-    const list = document.getElementById('taskList');
+    const daysGrid = document.getElementById('daysGrid');
+    const monthSelect = document.getElementById('monthSelect');
+    const yearSelect = document.getElementById('yearSelect');
+    const displayDate = document.getElementById('displayDate');
+    const eventList = document.getElementById('eventList');
 
-    // Carregar do LocalStorage
-    document.addEventListener('DOMContentLoaded', () => {
-        const saved = JSON.parse(localStorage.getItem('tasks') || '[]');
-        saved.forEach(t => renderTask(t));
-    });
+    let selectedDate = new Date();
+    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-    function addTask() {
-        const val = input.value.trim();
-        if (!val) return;
+    function init() {
+        // Preencher Meses
+        months.forEach((m, i) => {
+            const opt = document.createElement('option');
+            opt.value = i; opt.innerText = m;
+            if(i === selectedDate.getMonth()) opt.selected = true;
+            monthSelect.appendChild(opt);
+        });
 
-        renderTask(val);
-        saveTask(val);
-        input.value = '';
-        input.focus();
+        // Preencher Anos
+        for(let y = 2024; y <= 2030; y++) {
+            const opt = document.createElement('option');
+            opt.value = y; opt.innerText = y;
+            if(y === selectedDate.getFullYear()) opt.selected = true;
+            yearSelect.appendChild(opt);
+        }
+
+        renderCalendar();
+        updateDisplay();
     }
 
-    function renderTask(text) {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span class="task-text">${text}</span>
-            <button class="delete-btn" aria-label="Remover">Apagar</button>
-        `;
+    function renderCalendar() {
+        daysGrid.innerHTML = '';
+        const month = parseInt(monthSelect.value);
+        const year = parseInt(yearSelect.value);
         
-        li.querySelector('.delete-btn').onclick = function() {
-            const tasks = JSON.parse(localStorage.getItem('tasks'));
-            const filtered = tasks.filter(t => t !== text);
-            localStorage.setItem('tasks', JSON.stringify(filtered));
-            li.remove();
-        };
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        const events = JSON.parse(localStorage.getItem('agenda_milpau') || '{}');
 
-        list.appendChild(li);
+        // Espaços vazios para alinhar o primeiro dia da semana
+        for(let i = 0; i < firstDay; i++) {
+            daysGrid.appendChild(document.createElement('div'));
+        }
+
+        // Criar os dias do mês
+        for(let d = 1; d <= daysInMonth; d++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day';
+            dayDiv.innerText = d;
+            
+            const dateKey = `${year}-${month}-${d}`;
+            
+            if(events[dateKey] && events[dateKey].length > 0) dayDiv.classList.add('has-event');
+            
+            // Marca o dia selecionado
+            if(d === selectedDate.getDate() && month === selectedDate.getMonth() && year === selectedDate.getFullYear()) {
+                dayDiv.classList.add('selected');
+            }
+
+            dayDiv.onclick = () => {
+                selectedDate = new Date(year, month, d);
+                renderCalendar();
+                updateDisplay();
+            };
+            daysGrid.appendChild(dayDiv);
+        }
     }
 
-    function saveTask(text) {
-        const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-        tasks.push(text);
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+    function updateDisplay() {
+        const d = selectedDate.getDate();
+        const m = months[selectedDate.getMonth()];
+        const y = selectedDate.getFullYear();
+        displayDate.innerText = `Agendar para: ${d} de ${m}`;
+        renderEvents();
     }
 
-    input.addEventListener('keypress', e => { if(e.key === 'Enter') addTask(); });
+    function saveEvent() {
+        const task = document.getElementById('taskInput').value;
+        const time = document.getElementById('timeInput').value;
+        if(!task || !time) {
+            alert("Digite a tarefa e o horário!");
+            return;
+        }
+
+        const dateKey = `${selectedDate.getFullYear()}-${selectedDate.getMonth()}-${selectedDate.getDate()}`;
+        const events = JSON.parse(localStorage.getItem('agenda_milpau') || '{}');
+        
+        if(!events[dateKey]) events[dateKey] = [];
+        events[dateKey].push({ id: Date.now(), task, time });
+        
+        // Ordena por horário
+        events[dateKey].sort((a,b) => a.time.localeCompare(b.time));
+
+        localStorage.setItem('agenda_milpau', JSON.stringify(events));
+        document.getElementById('taskInput').value = '';
+        renderCalendar();
+        renderEvents();
+    }
+
+    function renderEvents() {
+        eventList.innerHTML = '';
+        const dateKey = `${selectedDate.getFullYear()}-${selectedDate.getMonth()}-${selectedDate.getDate()}`;
+        const events = JSON.parse(localStorage.getItem('agenda_milpau') || '{}');
+        
+        if(events[dateKey] && events[dateKey].length > 0) {
+            events[dateKey].forEach(ev => {
+                const li = document.createElement('li');
+                li.className = 'event-item';
+                li.innerHTML = `
+                    <div class="event-details"><b>${ev.time}</b> ${ev.task}</div>
+                    <div class="delete-btn" onclick="deleteEvent(${ev.id})">Apagar</div>
+                `;
+                eventList.appendChild(li);
+            });
+        } else {
+            eventList.innerHTML = '<p style="text-align:center; color:#8e8e93;">Nenhum compromisso neste dia.</p>';
+        }
+    }
+
+    function deleteEvent(id) {
+        const dateKey = `${selectedDate.getFullYear()}-${selectedDate.getMonth()}-${selectedDate.getDate()}`;
+        let events = JSON.parse(localStorage.getItem('agenda_milpau') || '{}');
+        events[dateKey] = events[dateKey].filter(e => e.id !== id);
+        localStorage.setItem('agenda_milpau', JSON.stringify(events));
+        renderCalendar();
+        renderEvents();
+    }
+
+    monthSelect.onchange = renderCalendar;
+    yearSelect.onchange = renderCalendar;
+
+    init();
 </script>
 
 </body>
